@@ -2,11 +2,11 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Focus Work Companion</title>
-    <!-- Change the font import to Indie Flower -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Focus Companion: Create Your Perfect Focus Ambiance with Ambient Videos</title>
+    <meta name="description" content="Enhance your productivity with our Focus Companion app. Choose your ideal focus ambiance with customizable ambient videos and sounds for the perfect work environment.">
+    <meta name="keywords" content="focus ambiance, focus companion, ambiance video, productivity, concentration, work environment">
     <link href="https://fonts.googleapis.com/css2?family=Indie+Flower&display=swap" rel="stylesheet">
-    <!-- Add these lines for the favicon -->
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
@@ -433,61 +433,63 @@
 </head>
 <body>
     <div id="app">
-        <div id="video-container">
-            <!-- YouTube video will be embedded here -->
-        </div>
-        <div id="timer-container">
-            <div id="focus-message">Stay focused in this ambiance...</div>
-            <div id="timer-circle">
-                <div id="timer-progress"></div>
-                <div id="timer">25:00</div>
-            </div>
-            <button id="reset-timer">Reset Timer 🔄</button>
-            <button id="change-video">Change Video 🎥</button>
-            <button id="exit-session">Exit Session 🚪</button>
-            <input type="range" id="volume-control" min="0" max="100" value="50">
-            <div style="text-align: center; margin-top: 10px;">🔈 Volume 🔊</div>
-        </div>
-        <div id="start-container">
-            <h1 id="start-title">
-                <span>Once upon a time...</span>
-                in a world of distractions,<br>
-                you discovered a magical focus world.<br>
-                Choose your enchanted ambiance:
-            </h1>
-            <div id="start-buttons-container">
-                <button class="start-button" id="start-with-music">
-                    Start Session<br>
-                    <span class="highlight">With Music</span>
-                    <span class="button-subtitle">Relaxing ambient tunes</span>
-                    🎵
-                </button>
-                <button class="start-button" id="start-no-music">
-                    Start Session<br>
-                    <span class="highlight">No Music</span>
-                    <span class="button-subtitle">Peaceful nature sounds</span>
-                    🍃
-                </button>
-            </div>
-            <div id="social-links">
-                <a href="https://www.youtube.com/@hannawandering" target="_blank" class="social-icon" style="animation-delay: 0.1s;">
-                    <i class="fab fa-youtube"></i>
-                </a>
-                <a href="https://x.com/hannaz_z" target="_blank" class="social-icon" style="animation-delay: 0.2s;">
-                    <i class="fab fa-twitter"></i>
-                </a>
-                <a href="https://www.instagram.com/hannawandering/" target="_blank" class="social-icon" style="animation-delay: 0.3s;">
-                    <i class="fab fa-instagram"></i>
-                </a>
-                <a href="https://www.tiktok.com/@hannawandering" target="_blank" class="social-icon" style="animation-delay: 0.4s;">
-                    <i class="fab fa-tiktok"></i>
-                </a>
-            </div>
-        </div>
-        <div id="clock-animation">
-            <div id="clock-emoji">⏰</div>
-            <div id="clock-reminder">Pomodoro Clock<br>counting down</div>
-        </div>
+        <main>
+            <section id="video-container" aria-label="Ambiance Video Player">
+                <!-- YouTube video will be embedded here -->
+            </section>
+            <section id="timer-container" aria-label="Focus Timer">
+                <h2 id="focus-message">Stay focused in this ambiance...</h2>
+                <div id="timer-circle">
+                    <div id="timer-progress"></div>
+                    <div id="timer" aria-live="polite">25:00</div>
+                </div>
+                <button id="reset-timer">Reset Timer 🔄</button>
+                <button id="change-video">Change Ambiance Video 🎥</button>
+                <button id="exit-session">Exit Focus Session 🚪</button>
+                <input type="range" id="volume-control" min="0" max="100" value="50" aria-label="Ambiance Volume Control">
+                <div style="text-align: center; margin-top: 10px;">🔈 Ambiance Volume 🔊</div>
+            </section>
+            <section id="start-container" aria-label="Focus Companion Start Screen">
+                <h1 id="start-title">
+                    <span>Discover Your Ideal Focus Ambiance</span>
+                    In a world full of distractions,<br>
+                    You've found your perfect focus companion.<br>
+                    Choose your ambiance video:
+                </h1>
+                <div id="start-buttons-container">
+                    <button class="start-button" id="start-with-music">
+                        Start Focus Session<br>
+                        <span class="highlight">With Music</span>
+                        <span class="button-subtitle">Relaxing ambient tunes</span>
+                        🎵
+                    </button>
+                    <button class="start-button" id="start-no-music">
+                        Start Focus Session<br>
+                        <span class="highlight">No Music</span>
+                        <span class="button-subtitle">Peaceful nature sounds</span>
+                        🍃
+                    </button>
+                </div>
+                <nav id="social-links" aria-label="Social Media Links">
+                    <a href="https://www.youtube.com/@hannawandering" target="_blank" class="social-icon" style="animation-delay: 0.1s;" aria-label="YouTube Channel">
+                        <i class="fab fa-youtube"></i>
+                    </a>
+                    <a href="https://x.com/hannaz_z" target="_blank" class="social-icon" style="animation-delay: 0.2s;" aria-label="Twitter Profile">
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                    <a href="https://www.instagram.com/hannawandering/" target="_blank" class="social-icon" style="animation-delay: 0.3s;" aria-label="Instagram Profile">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a href="https://www.tiktok.com/@hannawandering" target="_blank" class="social-icon" style="animation-delay: 0.4s;" aria-label="TikTok Profile">
+                        <i class="fab fa-tiktok"></i>
+                    </a>
+                </nav>
+            </section>
+            <section id="clock-animation" aria-label="Focus Session Start Animation">
+                <div id="clock-emoji" aria-hidden="true">⏰</div>
+                <div id="clock-reminder">Your Focus Companion<br>is ready!</div>
+            </section>
+        </main>
     </div>
 
     <script src="https://www.youtube.com/iframe_api"></script>
