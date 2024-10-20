@@ -160,6 +160,7 @@
             background-size: cover;
             background-position: center;
             z-index: 2000;
+            padding: 40px; /* Add padding to the container */
         }
         #start-container::before {
             content: '';
@@ -168,14 +169,25 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background-color: rgba(0, 0, 0, 0.5);
+            background-color: rgba(0, 0, 0, 0.6);
             z-index: -1;
         }
+        #start-buttons-container {
+            display: flex;
+            flex-direction: row; /* Changed from column to row */
+            justify-content: center; /* Center the buttons horizontally */
+            align-items: center;
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            margin-top: 20px;
+        }
         .start-button {
-            width: 200px;
-            height: 200px;
-            border-radius: 50%;
-            font-size: 24px;
+            width: 240px; /* Reduced width to fit side by side */
+            height: auto;
+            border-radius: 15px;
+            font-size: 20px; /* Slightly reduced font size */
             background-color: #79C7C5;
             color: white;
             border: none;
@@ -183,24 +195,20 @@
             font-family: 'Indie Flower', cursive;
             font-weight: bold;
             transition: all 0.3s ease;
-            box-shadow: 0 0 15px rgba(121, 199, 197, 0.6);
+            box-shadow: 0 5px 15px rgba(121, 199, 197, 0.4);
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             text-align: center;
-            line-height: 1.2;
-            padding: 10px;
-            margin: 20px;
+            line-height: 1.4;
+            padding: 20px;
+            margin: 0 10px; /* Added horizontal margin */
         }
         .start-button:hover {
             background-color: #57ABA9;
-            box-shadow: 0 0 25px rgba(121, 199, 197, 0.9);
-            transform: scale(1.05);
-        }
-        #start-buttons-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            box-shadow: 0 8px 20px rgba(87, 171, 169, 0.6);
+            transform: translateY(-3px);
         }
         #clock-animation {
             position: fixed;
@@ -239,6 +247,54 @@
             0% { transform: scale(0.5) translateY(-50px); opacity: 0; }
             100% { transform: scale(1) translateY(0); opacity: 1; }
         }
+        .highlight {
+            position: relative;
+            display: inline-block;
+            padding: 0 5px;
+            font-size: 26px;
+            font-weight: bold;
+            color: #2C3E50;
+        }
+        .highlight::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 2px;
+            height: 10px;
+            background-color: rgba(255, 223, 0, 0.6);
+            z-index: -1;
+            transform: skew(-12deg) rotate(-2deg);
+        }
+        .button-subtitle {
+            font-size: 18px;
+            margin-top: 10px;
+            color: #34495E;
+        }
+        #start-title {
+            font-family: 'Indie Flower', cursive;
+            font-size: 28px; /* Reduced from 32px */
+            color: #A0E4CB;
+            text-align: left;
+            margin-bottom: 50px; /* Increased from 30px to create more space */
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+            line-height: 1.6; /* Increased for better readability */
+            max-width: 80%;
+            padding-left: 40px;
+        }
+
+        #start-title span {
+            display: block;
+            font-size: 36px; /* Reduced from 40px */
+            color: #F9F3CC;
+            margin-bottom: 10px;
+        }
+
+        #start-buttons-container {
+            align-items: flex-start;
+            padding: 40px;
+            margin-top: 20px; /* Add some top margin for extra spacing */
+        }
     </style>
 </head>
 <body>
@@ -259,9 +315,25 @@
             <div style="text-align: center; margin-top: 10px;">🔈 Volume 🔊</div>
         </div>
         <div id="start-container">
+            <h1 id="start-title">
+                <span>Once upon a time...</span>
+                in a world of distractions,<br>
+                you discovered a magical focus world.<br>
+                Choose your enchanted ambiance:
+            </h1>
             <div id="start-buttons-container">
-                <button class="start-button" id="start-with-music">Start Focus Session<br>With Music 🎵</button>
-                <button class="start-button" id="start-no-music">Start Focus Session<br>No Music 🍃</button>
+                <button class="start-button" id="start-with-music">
+                    Start Session<br>
+                    <span class="highlight">With Music</span>
+                    <span class="button-subtitle">Relaxing ambient tunes</span>
+                    🎵
+                </button>
+                <button class="start-button" id="start-no-music">
+                    Start Session<br>
+                    <span class="highlight">No Music</span>
+                    <span class="button-subtitle">Peaceful nature sounds</span>
+                    🍃
+                </button>
             </div>
         </div>
         <div id="clock-animation">
