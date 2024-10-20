@@ -261,17 +261,60 @@
 
     <script src="https://www.youtube.com/iframe_api"></script>
     <script>
-        const videoIds = [
+        const defaultVideoIds = [
             'jfKfPfyJRdk', // lofi hip hop radio - beats to relax/study to
             'DWcJFNfaw9c', // 4K HDR Forest - Relaxing Nature Sounds
             'mPZkdNFkNps', // Relaxing Rain Sounds
-            // Add more video IDs as needed
         ];
 
+        let videoIds = [];
         let player;
         let timer;
         let timerInterval;
         let shuffledVideoIds = [];
+
+        async function fetchYouTubeVideos() {
+            const apiKey = 'AIzaSyC2KrKCahs_8kjT5Uf67iglFSE9k7lW90g'; // Replace this with your actual YouTube API key
+            const searchQuery = 'relaxing ambient music'; // Adjust this query as needed
+            const maxResults = 10; // Number of videos to fetch
+
+            try {
+                const response = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&q=${encodeURIComponent(searchQuery)}&type=video&videoEmbeddable=true&videoDuration=long&maxResults=${maxResults}&key=${apiKey}`);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const data = await response.json();
+                if (!data.items || data.items.length === 0) {
+                    throw new Error('No videos found in the API response');
+                }
+                return data.items.map(item => item.id.videoId);
+            } catch (error) {
+                console.error('Error fetching YouTube videos:', error);
+                return null;
+            }
+        }
+
+        async function initializeVideoIds() {
+            try {
+                const fetchedVideos = await Promise.race([
+                    fetchYouTubeVideos(),
+                    new Promise((_, reject) => setTimeout(() => reject(new Error('Fetch timeout')), 5000))
+                ]);
+
+                if (fetchedVideos && fetchedVideos.length > 0) {
+                    videoIds = fetchedVideos;
+                    console.log("Successfully fetched video IDs from API");
+                } else {
+                    throw new Error('No videos fetched or empty response');
+                }
+            } catch (error) {
+                console.warn('Failed to fetch videos or timeout occurred. Using default videos.', error);
+                videoIds = defaultVideoIds;
+            }
+
+            shuffledVideoIds = shuffleArray(videoIds);
+            console.log("Initialized video IDs:", shuffledVideoIds);
+        }
 
         function shuffleArray(array) {
             const shuffled = [...array];
@@ -288,7 +331,7 @@
             }
 
             const videoId = shuffledVideoIds.pop();
-            console.log("Loading video:", videoId); // Debugging line
+            console.log("Loading video:", videoId);
 
             if (player) {
                 player.loadVideoById(videoId);
@@ -411,12 +454,11 @@
             player.setVolume(volumeControl.value);
         }
 
-        function startSession() {
+        async function startSession() {
             document.getElementById('start-container').style.display = 'none';
             
-            // Ensure we have a fresh shuffle for each session
-            shuffledVideoIds = shuffleArray(videoIds);
-            console.log("Shuffled videos:", shuffledVideoIds); // Debugging line
+            // Initialize video IDs before starting the session
+            await initializeVideoIds();
 
             // Show clock animation
             const clockAnimation = document.getElementById('clock-animation');
