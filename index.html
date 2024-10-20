@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Focus Work Companion</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow: hidden;
+            font-family: 'Arial', sans-serif;
+            background-color: #F0F4F8;
+        }
+        #app {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+        #video-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+        #timer-container {
+            display: none;
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            z-index: 2;
+            background-color: rgba(255, 255, 255, 0.8);
+            color: #5B7083;
+            padding: 20px;
+            border-radius: 25px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(5px);
+            width: 250px;
+        }
+        #timer-circle {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background-color: #E1E8ED;
+            margin: 0 auto 20px;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 0 10px rgba(91, 112, 131, 0.2);
+        }
+        #timer-progress {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            position: absolute;
+            clip: rect(0px, 100px, 200px, 0px);
+            background-color: #79C7C5;
+            transform: rotate(0deg);
+            transition: transform 1s linear;
+        }
+        #timer {
+            font-size: 48px;
+            font-weight: bold;
+            color: #5B7083;
+            z-index: 1;
+            text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.5);
+        }
+        #focus-message {
+            font-size: 18px;
+            font-weight: bold;
+            text-align: center;
+            color: #5B7083;
+            margin-bottom: 15px;
+            line-height: 1.4;
+        }
+        button {
+            display: block;
+            width: 100%;
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #79C7C5;
+            color: #FFFFFF;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            font-size: 16px;
+            font-family: 'Arial', sans-serif;
+        }
+        button:hover {
+            background-color: #57ABA9;
+        }
+        #volume-control {
+            width: 100%;
+            margin-top: 15px;
+            -webkit-appearance: none;
+            appearance: none;
+            height: 5px;
+            background: #E1E8ED;
+            outline: none;
+            opacity: 0.7;
+            transition: opacity 0.2s;
+            border-radius: 25px;
+        }
+        #volume-control:hover {
+            opacity: 1;
+        }
+        #volume-control::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            background: #79C7C5;
+            cursor: pointer;
+            border-radius: 50%;
+        }
+        #volume-control::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            background: #79C7C5;
+            cursor: pointer;
+            border-radius: 50%;
+        }
+        #loading-message {
+            display: none;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 3;
+            background-color: rgba(255, 255, 255, 0.8);
+            color: #5B7083;
+            padding: 20px;
+            border-radius: 25px;
+            font-size: 18px;
+            font-family: 'Arial', sans-serif;
+        }
+        #start-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: rgba(240, 244, 248, 0.9);
+            z-index: 2000;
+        }
+        #start-button {
+            font-size: 24px;
+            padding: 15px 30px;
+            background-color: #79C7C5;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        #start-button:hover {
+            background-color: #57ABA9;
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <div id="video-container">
+            <!-- YouTube video will be embedded here -->
+        </div>
+        <div id="timer-container">
+            <div id="focus-message">Stay focused in this ambiance...</div>
+            <div id="timer-circle">
+                <div id="timer-progress"></div>
+                <div id="timer">25:00</div>
+            </div>
+            <button id="reset-timer">Reset Timer 🔄</button>
+            <button id="exit-session">Exit Session 🚪</button>
+            <input type="range" id="volume-control" min="0" max="100" value="50">
+            <div style="text-align: center; margin-top: 10px;">🔈 Volume 🔊</div>
+        </div>
+        <div id="start-container">
+            <button id="start-button">Start Immersive Focus Session</button>
+        </div>
+    </div>
+
+    <script src="https://www.youtube.com/iframe_api"></script>
+    <script>
+        const videoIds = [
+            'jfKfPfyJRdk', // lofi hip hop radio - beats to relax/study to
+            'DWcJFNfaw9c', // 4K HDR Forest - Relaxing Nature Sounds
+            'mPZkdNFkNps', // Relaxing Rain Sounds
+            // Add more video IDs as needed
+        ];
+
+        let player;
+        let timer;
+        let timerInterval;
+        let currentVideoIndex = 0;
+
+        function onYouTubeIframeAPIReady() {
+            // Don't load video immediately, wait for button click
+        }
+
+        function loadVideo() {
+            if (currentVideoIndex >= videoIds.length) {
+                console.error("All videos failed to load");
+                alert("Unable to load any videos. Please try again later.");
+                return;
+            }
+
+            const videoId = videoIds[currentVideoIndex];
+            player = new YT.Player('video-container', {
+                height: '100%',
+                width: '100%',
+                videoId: videoId,
+                playerVars: {
+                    'autoplay': 1,
+                    'controls': 0,
+                    'mute': 0, // Change this to 0 to unmute the video
+                    'loop': 1,
+                    'playlist': videoId
+                },
+                events: {
+                    'onReady': onPlayerReady,
+                    'onError': onPlayerError
+                }
+            });
+        }
+
+        function onPlayerReady(event) {
+            event.target.playVideo();
+            event.target.unMute(); // Unmute the video
+            event.target.setVolume(50); // Set initial volume to 50%
+            startTimer();
+            requestFullscreen();
+        }
+
+        function onPlayerError(event) {
+            console.log("Video failed to load. Trying next video...");
+            currentVideoIndex++;
+            loadVideo();
+        }
+
+        function startTimer() {
+            let time = 25 * 60; // 25 minutes in seconds
+            const totalTime = time;
+            timer = document.getElementById('timer');
+            const timerProgress = document.getElementById('timer-progress');
+            
+            timerInterval = setInterval(() => {
+                const minutes = Math.floor(time / 60);
+                const seconds = time % 60;
+                timer.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                
+                // Update progress circle
+                const progress = (totalTime - time) / totalTime * 360;
+                timerProgress.style.transform = `rotate(${progress}deg)`;
+                
+                if (time === 0) {
+                    resetTimer();
+                } else {
+                    time--;
+                }
+            }, 1000);
+        }
+
+        function resetTimer() {
+            clearInterval(timerInterval);
+            startTimer();
+        }
+
+        function exitSession() {
+            player.stopVideo();
+            clearInterval(timerInterval);
+            exitFullscreen();
+            document.getElementById('start-container').style.display = 'flex';
+        }
+
+        function requestFullscreen() {
+            const elem = document.documentElement;
+            if (elem.requestFullscreen) {
+                elem.requestFullscreen();
+            } else if (elem.mozRequestFullScreen) {
+                elem.mozRequestFullScreen();
+            } else if (elem.webkitRequestFullscreen) {
+                elem.webkitRequestFullscreen();
+            } else if (elem.msRequestFullscreen) {
+                elem.msRequestFullscreen();
+            }
+        }
+
+        function exitFullscreen() {
+            if (document.exitFullscreen) {
+                document.exitFullscreen();
+            } else if (document.mozCancelFullScreen) {
+                document.mozCancelFullScreen();
+            } else if (document.webkitExitFullscreen) {
+                document.webkitExitFullscreen();
+            } else if (document.msExitFullscreen) {
+                document.msExitFullscreen();
+            }
+        }
+
+        function setVolume() {
+            const volumeControl = document.getElementById('volume-control');
+            player.setVolume(volumeControl.value);
+        }
+
+        function startSession() {
+            document.getElementById('start-container').style.display = 'none';
+            document.getElementById('timer-container').style.display = 'block';
+            loadVideo();
+        }
+
+        document.getElementById('start-button').addEventListener('click', startSession);
+        document.getElementById('reset-timer').addEventListener('click', resetTimer);
+        document.getElementById('exit-session').addEventListener('click', exitSession);
+        document.getElementById('volume-control').addEventListener('input', setVolume);
+    </script>
+</body>
+</html>
