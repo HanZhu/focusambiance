@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Focus Work Companion</title>
+    <!-- Change the font import to Indie Flower -->
+    <link href="https://fonts.googleapis.com/css2?family=Indie+Flower&display=swap" rel="stylesheet">
     <style>
         body, html {
             margin: 0;
@@ -148,23 +150,50 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            background-color: rgba(240, 244, 248, 0.9);
+            background-image: url('https://images.unsplash.com/photo-1542273917363-3b1817f69a2d');
+            background-size: cover;
+            background-position: center;
             z-index: 2000;
         }
+        #start-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: -1;
+        }
         #start-button {
-            font-size: 24px;
-            padding: 15px 30px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 3;
+            width: 200px; /* Increased from 150px */
+            height: 200px; /* Increased from 150px */
+            border-radius: 50%;
+            font-size: 32px; /* Increased from 26px */
             background-color: #79C7C5;
             color: white;
             border: none;
-            border-radius: 50px;
             cursor: pointer;
+            font-family: 'Indie Flower', cursive;
+            font-weight: bold;
             transition: all 0.3s ease;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 0 15px rgba(121, 199, 197, 0.6); /* Slightly increased shadow */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            line-height: 1.2;
+            padding: 10px; /* Added padding for better text wrapping */
         }
         #start-button:hover {
             background-color: #57ABA9;
-            transform: scale(1.05);
+            box-shadow: 0 0 25px rgba(121, 199, 197, 0.9); /* Increased glow effect */
+            transform: translate(-50%, -50%) scale(1.05); /* Added slight scale effect on hover */
         }
         #clock-animation {
             position: fixed;
@@ -222,7 +251,7 @@
             <div style="text-align: center; margin-top: 10px;">🔈 Volume 🔊</div>
         </div>
         <div id="start-container">
-            <button id="start-button">Start Immersive Focus Session</button>
+            <button id="start-button">Start Focus Session</button>
         </div>
         <div id="clock-animation">
             <div id="clock-emoji">⏰</div>
