@@ -166,6 +166,43 @@
             background-color: #57ABA9;
             transform: scale(1.05);
         }
+        #clock-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background-color: rgba(255, 255, 255, 0.5);
+            z-index: 2500;
+            backdrop-filter: blur(5px);
+        }
+        #clock-emoji {
+            font-size: 100px;
+            margin-bottom: 20px;
+            animation: meltIn 1s ease-out;
+        }
+        #clock-reminder {
+            font-size: 24px;
+            text-align: center;
+            color: #5B7083;
+            animation: meltIn 1s ease-out 0.3s both;
+        }
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; visibility: hidden; }
+        }
+        @keyframes vanishClock {
+            0% { transform: scale(1) rotate(0deg); opacity: 1; }
+            100% { transform: scale(0) rotate(720deg); opacity: 0; }
+        }
+        @keyframes meltIn {
+            0% { transform: scale(0.5) translateY(-50px); opacity: 0; }
+            100% { transform: scale(1) translateY(0); opacity: 1; }
+        }
     </style>
 </head>
 <body>
@@ -186,6 +223,10 @@
         </div>
         <div id="start-container">
             <button id="start-button">Start Immersive Focus Session</button>
+        </div>
+        <div id="clock-animation">
+            <div id="clock-emoji">⏰</div>
+            <div id="clock-reminder">Pomodoro Clock<br>counting down</div>
         </div>
     </div>
 
@@ -314,8 +355,34 @@
 
         function startSession() {
             document.getElementById('start-container').style.display = 'none';
+            
+            // Show clock animation
+            const clockAnimation = document.getElementById('clock-animation');
+            const clockEmoji = document.getElementById('clock-emoji');
+            const clockReminder = document.getElementById('clock-reminder');
+            
+            // Reset animations
+            clockEmoji.style.animation = 'none';
+            clockReminder.style.animation = 'none';
+            clockEmoji.offsetHeight; // Trigger reflow
+            clockReminder.offsetHeight; // Trigger reflow
+            clockEmoji.style.animation = 'meltIn 1s ease-out';
+            clockReminder.style.animation = 'meltIn 1s ease-out 0.3s both';
+            
+            clockAnimation.style.display = 'flex';
+            
+            // Start video and timer processing immediately
             document.getElementById('timer-container').style.display = 'block';
             loadVideo();
+            
+            // Hide clock animation after 3 seconds
+            setTimeout(() => {
+                clockEmoji.style.animation = 'vanishClock 1s forwards';
+                clockReminder.style.animation = 'fadeOut 1s forwards';
+                setTimeout(() => {
+                    clockAnimation.style.display = 'none';
+                }, 1000);
+            }, 3000);
         }
 
         document.getElementById('start-button').addEventListener('click', startSession);
