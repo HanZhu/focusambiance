@@ -271,49 +271,58 @@
         let player;
         let timer;
         let timerInterval;
-        let currentVideoIndex = 0;
+        let shuffledVideoIds = [];
 
-        function onYouTubeIframeAPIReady() {
-            // Don't load video immediately, wait for button click
+        function shuffleArray(array) {
+            const shuffled = [...array];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            return shuffled;
         }
 
         function loadVideo() {
-            if (currentVideoIndex >= videoIds.length) {
-                console.error("All videos failed to load");
-                alert("Unable to load any videos. Please try again later.");
-                return;
+            if (shuffledVideoIds.length === 0) {
+                shuffledVideoIds = shuffleArray(videoIds);
             }
 
-            const videoId = videoIds[currentVideoIndex];
-            player = new YT.Player('video-container', {
-                height: '100%',
-                width: '100%',
-                videoId: videoId,
-                playerVars: {
-                    'autoplay': 1,
-                    'controls': 0,
-                    'mute': 0, // Change this to 0 to unmute the video
-                    'loop': 1,
-                    'playlist': videoId
-                },
-                events: {
-                    'onReady': onPlayerReady,
-                    'onError': onPlayerError
-                }
-            });
+            const videoId = shuffledVideoIds.pop();
+            console.log("Loading video:", videoId); // Debugging line
+
+            if (player) {
+                player.loadVideoById(videoId);
+                onPlayerReady({ target: player });
+            } else {
+                player = new YT.Player('video-container', {
+                    height: '100%',
+                    width: '100%',
+                    videoId: videoId,
+                    playerVars: {
+                        'autoplay': 1,
+                        'controls': 0,
+                        'mute': 0,
+                        'loop': 1,
+                        'playlist': videoId
+                    },
+                    events: {
+                        'onReady': onPlayerReady,
+                        'onError': onPlayerError
+                    }
+                });
+            }
         }
 
         function onPlayerReady(event) {
             event.target.playVideo();
-            event.target.unMute(); // Unmute the video
-            event.target.setVolume(50); // Set initial volume to 50%
+            event.target.unMute();
+            event.target.setVolume(50);
             startTimer();
             requestFullscreen();
         }
 
         function onPlayerError(event) {
             console.log("Video failed to load. Trying next video...");
-            currentVideoIndex++;
             loadVideo();
         }
 
@@ -342,7 +351,27 @@
 
         function resetTimer() {
             clearInterval(timerInterval);
-            startTimer();
+            let time = 25 * 60; // Reset to 25 minutes
+            const totalTime = time;
+            timer.textContent = '25:00';
+            const timerProgress = document.getElementById('timer-progress');
+            timerProgress.style.transform = 'rotate(0deg)'; // Reset progress circle
+
+            timerInterval = setInterval(() => {
+                const minutes = Math.floor(time / 60);
+                const seconds = time % 60;
+                timer.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                
+                // Update progress circle
+                const progress = (totalTime - time) / totalTime * 360;
+                timerProgress.style.transform = `rotate(${progress}deg)`;
+                
+                if (time === 0) {
+                    clearInterval(timerInterval);
+                } else {
+                    time--;
+                }
+            }, 1000);
         }
 
         function exitSession() {
@@ -385,6 +414,10 @@
         function startSession() {
             document.getElementById('start-container').style.display = 'none';
             
+            // Ensure we have a fresh shuffle for each session
+            shuffledVideoIds = shuffleArray(videoIds);
+            console.log("Shuffled videos:", shuffledVideoIds); // Debugging line
+
             // Show clock animation
             const clockAnimation = document.getElementById('clock-animation');
             const clockEmoji = document.getElementById('clock-emoji');
@@ -415,7 +448,9 @@
         }
 
         document.getElementById('start-button').addEventListener('click', startSession);
-        document.getElementById('reset-timer').addEventListener('click', resetTimer);
+        document.getElementById('reset-timer').addEventListener('click', () => {
+            resetTimer();
+        });
         document.getElementById('exit-session').addEventListener('click', exitSession);
         document.getElementById('volume-control').addEventListener('input', setVolume);
     </script>
