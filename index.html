@@ -327,6 +327,108 @@
                 transform: translateY(0);
             }
         }
+
+        @media (max-width: 768px) {
+            #timer-container {
+                top: 10px;
+                right: 10px;
+                left: 10px;
+                width: auto;
+                padding: 15px;
+            }
+
+            #timer-circle {
+                width: 150px;
+                height: 150px;
+            }
+
+            #timer {
+                font-size: 36px;
+            }
+
+            #focus-message {
+                font-size: 16px;
+            }
+
+            button {
+                font-size: 14px;
+                padding: 8px;
+            }
+
+            #start-container {
+                padding: 20px;
+            }
+
+            #start-title {
+                font-size: 24px;
+                padding-left: 20px;
+                margin-bottom: 30px;
+            }
+
+            #start-title span {
+                font-size: 30px;
+            }
+
+            #start-buttons-container {
+                flex-direction: column;
+                padding: 20px;
+            }
+
+            .start-button {
+                width: 100%;
+                margin: 10px 0;
+                font-size: 18px;
+            }
+
+            .highlight {
+                font-size: 22px;
+            }
+
+            .button-subtitle {
+                font-size: 16px;
+            }
+
+            #social-links {
+                bottom: 10px;
+                right: 10px;
+                gap: 10px;
+            }
+
+            .social-icon {
+                font-size: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            #timer-circle {
+                width: 120px;
+                height: 120px;
+            }
+
+            #timer {
+                font-size: 28px;
+            }
+
+            #start-title {
+                font-size: 20px;
+            }
+
+            #start-title span {
+                font-size: 26px;
+            }
+
+            .start-button {
+                font-size: 16px;
+            }
+
+            .highlight {
+                font-size: 20px;
+            }
+
+            .button-subtitle {
+                font-size: 14px;
+            }
+        }
     </style>
 </head>
 <body>
