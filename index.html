@@ -246,6 +246,7 @@
                 <div id="timer">25:00</div>
             </div>
             <button id="reset-timer">Reset Timer 🔄</button>
+            <button id="change-video">Change Video 🎥</button>
             <button id="exit-session">Exit Session 🚪</button>
             <input type="range" id="volume-control" min="0" max="100" value="50">
             <div style="text-align: center; margin-top: 10px;">🔈 Volume 🔊</div>
@@ -489,10 +490,15 @@
             }, 3000);
         }
 
+        function changeVideo() {
+            loadVideo();
+        }
+
         document.getElementById('start-button').addEventListener('click', startSession);
         document.getElementById('reset-timer').addEventListener('click', () => {
             resetTimer();
         });
+        document.getElementById('change-video').addEventListener('click', changeVideo);
         document.getElementById('exit-session').addEventListener('click', exitSession);
         document.getElementById('volume-control').addEventListener('input', setVolume);
     </script>
