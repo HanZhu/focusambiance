@@ -157,22 +157,81 @@ async function playVideo(withMusic = true) {
 
 function checkForAdsAndSwitch(player, withMusic) {
   let adCheckCount = 0;
-  const maxAdChecks = 20; // Check for 2 seconds (20 * 100ms)
+  const maxAdChecks = 200; // Check for 20 seconds (200 * 100ms)
 
   const adCheckInterval = setInterval(() => {
     adCheckCount++;
     if (player.getAdState() === 1 || player.getAdState() === 3) { // Ad is playing or queued
-      console.log("Ad detected, switching to next video");
-      clearInterval(adCheckInterval);
-      switchToNextVideo(withMusic);
+      console.log("Ad detected");
+      showAdOverlay(player);
+      // We're not immediately switching videos now, but waiting for the ad to be skipped or end
     } else if (player.getPlayerState() === 1) { // Video is playing
       console.log("No ad detected, playing video");
+      hideAdOverlay();
       clearInterval(adCheckInterval);
     } else if (adCheckCount >= maxAdChecks) {
       console.log("Ad check timeout, assuming no ad");
+      hideAdOverlay();
       clearInterval(adCheckInterval);
     }
   }, 100); // Check every 100ms for faster response
+}
+
+function showAdOverlay(player) {
+  let overlay = document.getElementById('ad-overlay');
+  if (!overlay) {
+    overlay = document.createElement('div');
+    overlay.id = 'ad-overlay';
+    overlay.style.position = 'fixed';
+    overlay.style.top = '0';
+    overlay.style.left = '0';
+    overlay.style.width = '100%';
+    overlay.style.height = '100%';
+    overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.7)';
+    overlay.style.display = 'flex';
+    overlay.style.justifyContent = 'center';
+    overlay.style.alignItems = 'center';
+    overlay.style.zIndex = '9999';
+
+    const message = document.createElement('div');
+    message.textContent = 'This is an ad... navigate to the bottom right corner to skip it.';
+    message.style.color = 'white';
+    message.style.fontSize = '24px';
+    message.style.textAlign = 'center';
+    message.style.padding = '20px';
+    message.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+    message.style.borderRadius = '10px';
+
+    overlay.appendChild(message);
+    document.body.appendChild(overlay);
+  } else {
+    overlay.style.display = 'flex';
+  }
+
+  // Create a hole in the overlay for the skip button
+  const skipButtonArea = document.createElement('div');
+  skipButtonArea.style.position = 'absolute';
+  skipButtonArea.style.bottom = '0';
+  skipButtonArea.style.right = '0';
+  skipButtonArea.style.width = '150px';
+  skipButtonArea.style.height = '50px';
+  skipButtonArea.style.backgroundColor = 'transparent';
+  overlay.appendChild(skipButtonArea);
+
+  // Listen for ad state changes
+  const adStateInterval = setInterval(() => {
+    if (player.getAdState() === 0) { // Ad has ended
+      clearInterval(adStateInterval);
+      hideAdOverlay();
+    }
+  }, 500);
+}
+
+function hideAdOverlay() {
+  const overlay = document.getElementById('ad-overlay');
+  if (overlay) {
+    overlay.style.display = 'none';
+  }
 }
 
 async function switchToNextVideo(withMusic) {
