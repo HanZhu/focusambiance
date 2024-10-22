@@ -47,6 +47,9 @@
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             backdrop-filter: blur(5px);
             width: 250px;
+            /* Add these lines to move the container lower */
+            margin-top: 50px; /* Adjust this value as needed */
+            padding-top: 20px; /* Additional padding for spacing */
         }
         #timer-circle {
             width: 200px;
@@ -441,6 +444,52 @@
                 font-size: 14px;
             }
         }
+
+        #focus-container {
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        #focus-input {
+            width: 90%;
+            padding: 12px 15px;
+            border: 2px solid #79C7C5;
+            border-radius: 25px;
+            font-size: 20px;
+            outline: none;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        #focus-input::placeholder {
+            color: #A0A0A0;
+            opacity: 1; /* Firefox */
+        }
+
+        #focus-input:focus::placeholder {
+            opacity: 0.5;
+        }
+
+        /* Add these new styles */
+        #focus-input:focus {
+            background-color: rgba(121, 199, 197, 0.1);
+            box-shadow: 0 0 0 3px rgba(121, 199, 197, 0.3);
+        }
+
+        #focus-display {
+            display: none;
+            font-size: 22px;
+            font-weight: bold;
+            color: #2C3E50;
+            background-color: rgba(121, 199, 197, 0.2);
+            padding: 12px 15px;
+            border-radius: 25px;
+            text-align: center;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -450,7 +499,10 @@
                 <!-- YouTube video will be embedded here -->
             </section>
             <section id="timer-container" aria-label="Focus Timer">
-                <h2 id="focus-message">Stay focused in this ambiance...</h2>
+                <div id="focus-container">
+                    <input type="text" id="focus-input" placeholder="Today I am focusing on..." aria-label="Enter your focus for today">
+                    <div id="focus-display"></div>
+                </div>
                 <div id="timer-circle">
                     <div id="timer-progress"></div>
                     <div id="timer" aria-live="polite">25:00</div>
@@ -780,6 +832,44 @@
                 loadVideo();
             }
         }
+
+        function handleFocusInput() {
+            const focusInput = document.getElementById('focus-input');
+            const focusDisplay = document.getElementById('focus-display');
+
+            function updateFocus() {
+                const focusText = focusInput.value.trim();
+                if (focusText) {
+                    focusDisplay.innerHTML = `Focus: ${focusText} <span style="margin-left: 5px;">✏️</span>`;
+                    focusInput.style.display = 'none';
+                    focusDisplay.style.display = 'block';
+                }
+            }
+
+            function enableEditing() {
+                focusInput.value = focusDisplay.textContent.replace('Focus: ', '').replace('✏️', '').trim();
+                focusInput.style.display = 'block';
+                focusDisplay.style.display = 'none';
+                focusInput.focus();
+            }
+
+            focusInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    updateFocus();
+                }
+            });
+
+            focusDisplay.addEventListener('click', enableEditing);
+
+            focusInput.addEventListener('blur', () => {
+                if (focusInput.value.trim()) {
+                    updateFocus();
+                }
+            });
+        }
+
+        // Call this function to initialize the focus input functionality
+        handleFocusInput();
 
         document.getElementById('start-with-music').addEventListener('click', () => startSession(true));
         document.getElementById('start-no-music').addEventListener('click', () => startSession(false));
