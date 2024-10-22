@@ -128,3 +128,12 @@ document.getElementById('musicToggle').addEventListener('change', () => {
   videoSelectionCount = 0;
   // Other logic for handling music toggle...
 });
+
+setTimeout(() => {
+    document.getElementById('clock-reminder').style.display = 'none';
+}, 10000); // Hide after 10 seconds
+
+// Or, hide after user clicks skip ad button
+document.getElementById('skipAdButton').addEventListener('click', () => {
+    document.getElementById('clock-reminder').style.display = 'none';
+});

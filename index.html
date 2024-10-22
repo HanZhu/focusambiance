@@ -228,25 +228,37 @@
         #clock-emoji {
             font-size: 100px;
             margin-bottom: 20px;
-            animation: meltIn 1s ease-out;
+            opacity: 0;
+            transform: scale(0.5);
+            animation: zoomIn 1s ease-out forwards;
         }
         #clock-reminder {
-            font-size: 24px;
             text-align: center;
-            color: #5B7083;
-            animation: meltIn 1s ease-out 0.3s both;
+            font-size: 24px;
+            background-color: rgba(255, 0, 0, 0.8);
+            color: #FFFFFF;
+            padding: 15px 25px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            border: 2px solid #FFFFFF;
+            max-width: 80%;
+            font-family: 'Arial', sans-serif;
+            line-height: 1.4;
+            opacity: 0;
+            transform: scale(0.9);
+            animation: fadeInScale 1s ease-out 0.3s forwards;
+        }
+        @keyframes zoomIn {
+            0% { transform: scale(0.5); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        @keyframes fadeInScale {
+            0% { transform: scale(0.9); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
         }
         @keyframes fadeOut {
-            from { opacity: 1; }
-            to { opacity: 0; visibility: hidden; }
-        }
-        @keyframes vanishClock {
-            0% { transform: scale(1) rotate(0deg); opacity: 1; }
-            100% { transform: scale(0) rotate(720deg); opacity: 0; }
-        }
-        @keyframes meltIn {
-            0% { transform: scale(0.5) translateY(-50px); opacity: 0; }
-            100% { transform: scale(1) translateY(0); opacity: 1; }
+            0% { opacity: 1; }
+            100% { opacity: 0; }
         }
         .highlight {
             position: relative;
@@ -487,7 +499,7 @@
             </section>
             <section id="clock-animation" aria-label="Focus Session Start Animation">
                 <div id="clock-emoji" aria-hidden="true">⏰</div>
-                <div id="clock-reminder">skip ads by clicking the button<br> at the <b>bottom-right</b> corner!</div>
+                <div id="clock-reminder">Skip ads by clicking the button<br>at the <b>bottom-right</b> corner!</div>
             </section>
         </main>
     </div>
@@ -611,6 +623,7 @@
             event.target.setVolume(50);
             startTimer();
             requestFullscreen();
+            showClockReminder();
         }
 
         function onPlayerError(event) {
@@ -714,39 +727,48 @@
             player.setVolume(volumeControl.value);
         }
 
-        async function startSession(withMusic) {
-            currentMusicPreference = withMusic;
-            document.getElementById('start-container').style.display = 'none';
-            
-            await initializeVideoIds(withMusic);
-
-            // Show clock animation
+        function showClockReminder() {
             const clockAnimation = document.getElementById('clock-animation');
             const clockEmoji = document.getElementById('clock-emoji');
             const clockReminder = document.getElementById('clock-reminder');
             
-            // Reset animations
-            clockEmoji.style.animation = 'none';
-            clockReminder.style.animation = 'none';
-            clockEmoji.offsetHeight; // Trigger reflow
-            clockReminder.offsetHeight; // Trigger reflow
-            clockEmoji.style.animation = 'meltIn 1s ease-out';
-            clockReminder.style.animation = 'meltIn 1s ease-out 0.3s both';
-            
             clockAnimation.style.display = 'flex';
+            clockEmoji.style.animation = 'zoomIn 1s ease-out forwards';
+            clockReminder.style.animation = 'fadeInScale 1s ease-out 0.3s forwards';
+            
+            // Hide after 5 seconds
+            setTimeout(() => {
+                hideClockReminder();
+            }, 5000);
+        }
+
+        function hideClockReminder() {
+            const clockAnimation = document.getElementById('clock-animation');
+            const clockEmoji = document.getElementById('clock-emoji');
+            const clockReminder = document.getElementById('clock-reminder');
+            
+            clockEmoji.style.animation = 'fadeOut 1s forwards';
+            clockReminder.style.animation = 'fadeOut 1s forwards';
+            
+            setTimeout(() => {
+                clockAnimation.style.display = 'none';
+                // Reset animations for next use
+                clockEmoji.style.animation = '';
+                clockReminder.style.animation = '';
+            }, 1000);
+        }
+
+        function startSession(withMusic) {
+            currentMusicPreference = withMusic;
+            document.getElementById('start-container').style.display = 'none';
+            
+            showClockReminder();
             
             // Start video and timer processing immediately
             document.getElementById('timer-container').style.display = 'block';
-            loadVideo();
-            
-            // Hide clock animation after 3 seconds
-            setTimeout(() => {
-                clockEmoji.style.animation = 'vanishClock 1s forwards';
-                clockReminder.style.animation = 'fadeOut 1s forwards';
-                setTimeout(() => {
-                    clockAnimation.style.display = 'none';
-                }, 1000);
-            }, 3000);
+            initializeVideoIds(withMusic).then(() => {
+                loadVideo();
+            });
         }
 
         function changeVideo() {
@@ -765,6 +787,7 @@
         document.getElementById('change-video').addEventListener('click', changeVideo);
         document.getElementById('exit-session').addEventListener('click', exitSession);
         document.getElementById('volume-control').addEventListener('input', setVolume);
+        document.getElementById('video-container').addEventListener('click', hideClockReminder);
     </script>
 </body>
 </html>
