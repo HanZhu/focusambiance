@@ -560,10 +560,13 @@
 
     <script src="https://www.youtube.com/iframe_api"></script>
     <script>
-        const defaultVideoIds = [
-            'jfKfPfyJRdk', // lofi hip hop radio - beats to relax/study to
-            'DWcJFNfaw9c', // 4K HDR Forest - Relaxing Nature Sounds
-            'mPZkdNFkNps', // Relaxing Rain Sounds
+        const preSelectedMusicVideos = [
+            'Chs2mKwsha4', 'c18WZZa4KIA', '9HOJ0f5vMEY', 'fIcguYb58CU', '9LH_srczd3k', 'fBvMQ6f-F5Y', 'JJH8E3GKdOs', '4wZmRQcIDME', 'pBIfq9EdK9A', 't8C_sEWYKyg', 'Wwk7oJRUhqQ', 'ner_DA0HZts', 'smeH-CPUa0E', 'SXUAudmzemo', 'K1881OmmQCE', 'bTnFW5QDTkE', 'ATkI9r6DEeE', 'BHrQNVTcdPg', 'Dy7xOJAyFis', '8J7-oanANhE', 'ksoP0Xjljgk', 'm6SOJlkN1zU', 'bXT96SVp0jg', 'HrNNk-zUR3Q', 'DRFHklnN-SM', 'pFQAyE0uFZ8', 'tedLJsVon1o', 'OViU_giSNl4', 'NQVPjn8wNAw', 'ykTLM_3TsPo', '5lOEWQJyI9s', 'u0UsgECaeuY', 'OvoAsrR7fXs', 'avxzq5wKt_4', '4zbGpTybGnA', 'Kn3jZO6Rock', 'UcBEvaZ8aaw', 'yflQzrfdtXw', '6tKTjqB-f_w', '02Kmu4CY0G4', 'pKbGGt-iL1Q', 'tHPGFsu1fHo', 'OO2kPK5-qno', '_Kha7TOXSgk', 'mA3O_x_ypJM', 'IxmDx256CzM', 'rKImvyg0thI', 'IC2U4WmGFyQ', 'xOQyovt-Jio', 'W4BqvpsyC3Y', 'pCRAnf1UCLA', 'qAthzzdO-kY', 'JWeE_u88W-M', '0L38Z9hIi5s', 'u9vK5utTcxE', 'igJxX3NEEHM'
+        ];
+
+        const preSelectedNoMusicVideos = [
+            'q8kxKvSQ7MI', 'eI9WoDh-2b4', 'HchoJW80jiQ', 'BHACKCNDMW8',
+            'efhzNvN4mrQ', 'zfvYhU0J8xc', 'iHzB1TOskEA', 'WJi3q2hlxvY', 'reFJTK645O4', 'lRB6EUgdYvA', 'awIaXbV0sNs', 'RD929GWcPxo', '4NnNv9pWhqc', 'LRmNqKw6Ly0', 'MOoJN_J0GdQ', 'nrF2HflT8Tk', 'pRG0cDAU70o', '7b8Pcma3EwY', 's3VnmAIeetA', 'g2Ytq8atf70', 'N9TefB0gh_k', 'VLfPUJCPDqY', 'eJhhfr7sxk8', 'U_KrN18SOYk', 'wmsanwB-z-0', 'pyAGgC2-45g', 'Y7mkQ6R4ABg', 'H-wk-58QnYM', 'jU8w2-EcMIc', 'V_MRfN9ABTQ', 'qe3l1rvJMlA', 'hXAxxXVPm-M', 'UgHKb_7884o', 'zJW0NG6BYkY', '5UuvHzy3nvg', 'NeBlDtBSbI8', 'bhWJF9FlBqM', 'Wr4v0NO2PRo', 'VGlYxtkZUXI', '0vU22YUocHs', 'DaWb3XxMUS8', 'LhTxrJaoCKY', 'u3TnmAB693M', 'aXMVb5pZ_iM', 'DZkAzEmLoOQ', '_P2O9ZXpKD8', 'SMnyaKqp-h4', 'HRSKWtsr_Ss', 'WlMgvxy6Wr8', '0KMjwgcg2vs', '1UlSfJj6yac', 'p1yDbck93sE', '3qyl9H_BW5o', '4vIQON2fDWM', 'L_sGOlCaH8U', '4LrNgoGlQm4', 'dd4D8tZPfKE', 'n1R486h9T4Q', 'SVrCG11zSPw', 'akpLkQd8WnE'
         ];
 
         let videoIds = [];
@@ -573,47 +576,10 @@
         let shuffledVideoIds = [];
         let currentMusicPreference = null;
         let recentlyPlayedVideos = [];
-        const maxRecentVideos = 5; // Number of videos to remember
+        const maxRecentVideos = 5;
 
-        async function fetchYouTubeVideos(withMusic) {
-            const apiKey = 'AIzaSyC2KrKCahs_8kjT5Uf67iglFSE9k7lW90g'; // Make sure this is your correct API key
-            const searchQuery = withMusic ? 'relaxing ambient music' : 'nature sounds ambience no music';
-            const maxResults = 15; // Increased to 15 to have more options
-
-            try {
-                const response = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&q=${encodeURIComponent(searchQuery)}&type=video&videoEmbeddable=true&videoDuration=long&maxResults=${maxResults}&key=${apiKey}`);
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                const data = await response.json();
-                if (!data.items || data.items.length === 0) {
-                    throw new Error('No videos found in the API response');
-                }
-                return data.items.map(item => item.id.videoId);
-            } catch (error) {
-                console.error('Error fetching YouTube videos:', error);
-                return null;
-            }
-        }
-
-        async function initializeVideoIds(withMusic) {
-            try {
-                const fetchedVideos = await Promise.race([
-                    fetchYouTubeVideos(withMusic),
-                    new Promise((_, reject) => setTimeout(() => reject(new Error('Fetch timeout')), 5000))
-                ]);
-
-                if (fetchedVideos && fetchedVideos.length > 0) {
-                    videoIds = fetchedVideos;
-                    console.log("Successfully fetched video IDs from API");
-                } else {
-                    throw new Error('No videos fetched or empty response');
-                }
-            } catch (error) {
-                console.warn('Failed to fetch videos or timeout occurred. Using default videos.', error);
-                videoIds = withMusic ? defaultVideoIds : defaultNatureSoundIds;
-            }
-
+        function initializeVideoIds(withMusic) {
+            videoIds = withMusic ? preSelectedMusicVideos : preSelectedNoMusicVideos;
             shuffledVideoIds = shuffleArray(videoIds.filter(id => !recentlyPlayedVideos.includes(id)));
             console.log("Initialized video IDs:", shuffledVideoIds);
         }
@@ -629,7 +595,6 @@
 
         function loadVideo() {
             if (shuffledVideoIds.length === 0) {
-                // If we've used all videos, reset the recently played list and reshuffle
                 recentlyPlayedVideos = [];
                 shuffledVideoIds = shuffleArray(videoIds);
             }
@@ -637,10 +602,9 @@
             const videoId = shuffledVideoIds.pop();
             console.log("Loading video:", videoId);
 
-            // Add the video to recently played
             recentlyPlayedVideos.push(videoId);
             if (recentlyPlayedVideos.length > maxRecentVideos) {
-                recentlyPlayedVideos.shift(); // Remove the oldest video if we exceed the max
+                recentlyPlayedVideos.shift();
             }
 
             if (player) {
@@ -818,21 +782,13 @@
             
             showClockReminder();
             
-            // Start video and timer processing immediately
             document.getElementById('timer-container').style.display = 'block';
-            initializeVideoIds(withMusic).then(() => {
-                loadVideo();
-            });
+            initializeVideoIds(withMusic);
+            loadVideo();
         }
 
         function changeVideo() {
-            if (shuffledVideoIds.length === 0) {
-                initializeVideoIds(currentMusicPreference).then(() => {
-                    loadVideo();
-                });
-            } else {
-                loadVideo();
-            }
+            loadVideo();
         }
 
         function handleFocusInput() {
