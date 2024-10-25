@@ -560,6 +560,12 @@
 
     <script src="https://www.youtube.com/iframe_api"></script>
     <script>
+        // This function will be called once the API is ready
+        function onYouTubeIframeAPIReady() {
+            // Your existing code to create the player goes here
+            loadVideo();
+        }
+
         const preSelectedMusicVideos = [
             'Chs2mKwsha4', 'c18WZZa4KIA', '9HOJ0f5vMEY', 'fIcguYb58CU', '9LH_srczd3k', 'fBvMQ6f-F5Y', 'JJH8E3GKdOs', '4wZmRQcIDME', 'pBIfq9EdK9A', 't8C_sEWYKyg', 'Wwk7oJRUhqQ', 'ner_DA0HZts', 'smeH-CPUa0E', 'SXUAudmzemo', 'K1881OmmQCE', 'bTnFW5QDTkE', 'ATkI9r6DEeE', 'BHrQNVTcdPg', 'Dy7xOJAyFis', '8J7-oanANhE', 'ksoP0Xjljgk', 'm6SOJlkN1zU', 'bXT96SVp0jg', 'HrNNk-zUR3Q', 'DRFHklnN-SM', 'pFQAyE0uFZ8', 'tedLJsVon1o', 'OViU_giSNl4', 'NQVPjn8wNAw', 'ykTLM_3TsPo', '5lOEWQJyI9s', 'u0UsgECaeuY', 'OvoAsrR7fXs', 'avxzq5wKt_4', '4zbGpTybGnA', 'Kn3jZO6Rock', 'UcBEvaZ8aaw', 'yflQzrfdtXw', '6tKTjqB-f_w', '02Kmu4CY0G4', 'pKbGGt-iL1Q', 'tHPGFsu1fHo', 'OO2kPK5-qno', '_Kha7TOXSgk', 'mA3O_x_ypJM', 'IxmDx256CzM', 'rKImvyg0thI', 'IC2U4WmGFyQ', 'xOQyovt-Jio', 'W4BqvpsyC3Y', 'pCRAnf1UCLA', 'qAthzzdO-kY', 'JWeE_u88W-M', '0L38Z9hIi5s', 'u9vK5utTcxE', 'igJxX3NEEHM'
         ];
@@ -594,6 +600,12 @@
         }
 
         function loadVideo() {
+            if (typeof YT === 'undefined' || !YT.loaded) {
+                // If the API isn't loaded yet, wait and try again
+                setTimeout(loadVideo, 100);
+                return;
+            }
+
             if (shuffledVideoIds.length === 0) {
                 recentlyPlayedVideos = [];
                 shuffledVideoIds = shuffleArray(videoIds);
@@ -784,7 +796,7 @@
             
             document.getElementById('timer-container').style.display = 'block';
             initializeVideoIds(withMusic);
-            loadVideo();
+            loadVideo(); // This will now wait for the API to be ready
         }
 
         function changeVideo() {
