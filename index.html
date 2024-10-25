@@ -240,15 +240,15 @@
         #clock-reminder {
             text-align: center;
             font-size: 24px;
-            background-color: rgba(255, 0, 0, 0.8);
+            background-color: rgba(121, 199, 197, 0.9); /* Softer teal color, matching the theme */
             color: #FFFFFF;
-            padding: 15px 25px;
-            border-radius: 10px;
-            box-shadow: 0 0 20px rgba(0,0,0,0.5);
-            border: 2px solid #FFFFFF;
+            padding: 20px 30px;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.5);
             max-width: 80%;
             font-family: 'Arial', sans-serif;
-            line-height: 1.4;
+            line-height: 1.6;
             opacity: 0;
             transform: scale(0.9);
             animation: fadeInScale 1s ease-out 0.3s forwards;
@@ -553,7 +553,7 @@
             </section>
             <section id="clock-animation" aria-label="Focus Session Start Animation">
                 <div id="clock-emoji" aria-hidden="true">⏰</div>
-                <div id="clock-reminder">Skip ads by clicking the button<br>at the <b>bottom-right</b> corner!</div>
+                <div id="clock-reminder">Your focus session is about to begin.<br>Take a deep breath and relax.</div>
             </section>
         </main>
     </div>
@@ -583,6 +583,9 @@
         let currentMusicPreference = null;
         let recentlyPlayedVideos = [];
         const maxRecentVideos = 5;
+        let clockReminderShown = false;
+        let retryCount = 0;
+        const maxRetries = 3;
 
         function initializeVideoIds(withMusic) {
             videoIds = withMusic ? preSelectedMusicVideos : preSelectedNoMusicVideos;
@@ -600,8 +603,8 @@
         }
 
         function loadVideo() {
+            retryCount = 0;
             if (typeof YT === 'undefined' || !YT.loaded) {
-                // If the API isn't loaded yet, wait and try again
                 setTimeout(loadVideo, 100);
                 return;
             }
@@ -653,7 +656,7 @@
             event.target.setVolume(50);
             startTimer();
             requestFullscreen();
-            showClockReminder();
+            // Remove the showClockReminder() call from here
         }
 
         function onPlayerError(event) {
@@ -661,15 +664,40 @@
             // Remove the failed video from the recently played list
             recentlyPlayedVideos = recentlyPlayedVideos.filter(id => id !== player.getVideoData().video_id);
             
-            if (shuffledVideoIds.length > 0) {
-                console.log("Trying next video...");
+            retryLoadVideo();
+        }
+
+        function retryLoadVideo() {
+            if (retryCount < maxRetries) {
+                retryCount++;
+                console.log(`Retry attempt ${retryCount}...`);
                 loadVideo();
             } else {
-                console.log("No more videos to try. Reinitializing...");
-                initializeVideoIds(currentMusicPreference).then(() => {
-                    loadVideo();
-                });
+                retryCount = 0;
+                console.log("Max retries reached. Showing error message to user.");
+                showErrorMessage("We're having trouble loading a video. Please try again later.");
             }
+        }
+
+        function showErrorMessage(message) {
+            const errorDiv = document.createElement('div');
+            errorDiv.id = 'error-message';
+            errorDiv.textContent = message;
+            errorDiv.style.position = 'fixed';
+            errorDiv.style.top = '50%';
+            errorDiv.style.left = '50%';
+            errorDiv.style.transform = 'translate(-50%, -50%)';
+            errorDiv.style.backgroundColor = 'rgba(255, 0, 0, 0.8)';
+            errorDiv.style.color = 'white';
+            errorDiv.style.padding = '20px';
+            errorDiv.style.borderRadius = '10px';
+            errorDiv.style.zIndex = '9999';
+            document.body.appendChild(errorDiv);
+
+            setTimeout(() => {
+                document.body.removeChild(errorDiv);
+                exitSession();
+            }, 5000);
         }
 
         function startTimer() {
@@ -721,10 +749,30 @@
         }
 
         function exitSession() {
-            player.stopVideo();
+            if (player) {
+                player.stopVideo();
+            }
             clearInterval(timerInterval);
             exitFullscreen();
-            document.getElementById('start-container').style.display = 'flex';
+            
+            // Hide the timer container and video container
+            document.getElementById('timer-container').style.display = 'none';
+            document.getElementById('video-container').style.display = 'none';
+            
+            // Show the start container
+            const startContainer = document.getElementById('start-container');
+            startContainer.style.display = 'flex';
+            startContainer.style.opacity = '1';
+            
+            // Reset the clock reminder flag
+            clockReminderShown = false;
+            
+            // Reset the focus input
+            const focusInput = document.getElementById('focus-input');
+            const focusDisplay = document.getElementById('focus-display');
+            focusInput.value = '';
+            focusInput.style.display = 'block';
+            focusDisplay.style.display = 'none';
         }
 
         function requestFullscreen() {
@@ -758,6 +806,8 @@
         }
 
         function showClockReminder() {
+            if (clockReminderShown) return;
+            
             const clockAnimation = document.getElementById('clock-animation');
             const clockEmoji = document.getElementById('clock-emoji');
             const clockReminder = document.getElementById('clock-reminder');
@@ -766,10 +816,11 @@
             clockEmoji.style.animation = 'zoomIn 1s ease-out forwards';
             clockReminder.style.animation = 'fadeInScale 1s ease-out 0.3s forwards';
             
-            // Hide after 5 seconds
+            clockReminderShown = true;
+            
             setTimeout(() => {
                 hideClockReminder();
-            }, 5000);
+            }, 4000); // Changed from 15000 to 4000 (4 seconds)
         }
 
         function hideClockReminder() {
@@ -790,13 +841,37 @@
 
         function startSession(withMusic) {
             currentMusicPreference = withMusic;
-            document.getElementById('start-container').style.display = 'none';
+            const startContainer = document.getElementById('start-container');
+            const timerContainer = document.getElementById('timer-container');
+            const videoContainer = document.getElementById('video-container');
             
+            // Show clock reminder immediately
             showClockReminder();
             
-            document.getElementById('timer-container').style.display = 'block';
-            initializeVideoIds(withMusic);
-            loadVideo(); // This will now wait for the API to be ready
+            // Delay the fade-out of the start container
+            setTimeout(() => {
+                startContainer.style.opacity = '0';
+                startContainer.style.transition = 'opacity 0.5s ease-out';
+                
+                setTimeout(() => {
+                    startContainer.style.display = 'none';
+                    videoContainer.style.display = 'block';
+                    timerContainer.style.display = 'block';
+                    
+                    initializeVideoIds(withMusic);
+                    loadVideo();
+                    
+                    // Enter fullscreen mode
+                    requestFullscreen();
+                    
+                    // Wait for the player to be ready
+                    const checkPlayerReady = setInterval(() => {
+                        if (player && player.getPlayerState !== undefined) {
+                            clearInterval(checkPlayerReady);
+                        }
+                    }, 100);
+                }, 500); // Wait for the fade-out transition to complete
+            }, 2000); // Delay the start of the fade-out to ensure clock reminder is visible
         }
 
         function changeVideo() {
