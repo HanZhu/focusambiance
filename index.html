@@ -492,6 +492,53 @@
             text-align: center;
             cursor: pointer;
         }
+
+        .support-button {
+            display: inline-block;
+            margin-top: 30px;
+            padding: 12px 24px;
+            background-color: #FFDD00;
+            color: #000000;
+            text-decoration: none;
+            font-family: 'Indie Flower', cursive;
+            font-size: 20px;
+            font-weight: bold;
+            border-radius: 30px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            animation: pulse 2s infinite;
+        }
+
+        .support-button:hover {
+            background-color: #FFE44D;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .support-button-timer {
+            margin-top: 20px;
+            font-size: 16px;
+            padding: 8px 16px;
+            background-color: rgba(255, 221, 0, 0.8);
+        }
+
+        #timer-container .support-button-timer {
+            display: block;
+            width: 80%;
+            margin: 20px auto 0;
+        }
     </style>
 </head>
 <body>
@@ -514,6 +561,10 @@
                 <button id="exit-session">Exit Focus Session 🚪</button>
                 <input type="range" id="volume-control" min="0" max="100" value="50" aria-label="Ambiance Volume Control">
                 <div style="text-align: center; margin-top: 10px;">🔈 Ambiance Volume 🔊</div>
+                <!-- Add this inside your #timer-container, after the volume control -->
+                <a href="https://buymeacoffee.com/hannawandering" target="_blank" id="support-button-timer" class="support-button support-button-timer">
+                    Support My Work ☕
+                </a>
             </section>
             <section id="start-container" aria-label="Focus Companion Start Screen">
                 <h1 id="start-title">
@@ -550,6 +601,10 @@
                         <i class="fab fa-tiktok"></i>
                     </a>
                 </nav>
+                <!-- Add this inside your #start-container, after the #start-buttons-container -->
+                <a href="https://buymeacoffee.com/hannawandering" target="_blank" id="support-button" class="support-button">
+                    Support My Work ☕
+                </a>
             </section>
             <section id="clock-animation" aria-label="Focus Session Start Animation">
                 <div id="clock-emoji" aria-hidden="true">⏰</div>
