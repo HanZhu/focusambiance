@@ -162,11 +162,22 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            background-image: url('https://images.unsplash.com/photo-1542273917363-3b1817f69a2d');
-            background-size: cover;
-            background-position: center;
             z-index: 2000;
-            padding: 40px; /* Add padding to the container */
+            padding: 40px;
+            overflow: hidden;
+        }
+        #rain-background {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            min-width: 100%;
+            min-height: 100%;
+            width: auto;
+            height: auto;
+            transform: translate(-50%, -50%);
+            z-index: -2;
+            object-fit: cover;
+            opacity: 0.8;
         }
         #start-container::before {
             content: '';
@@ -175,7 +186,12 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background-color: rgba(0, 0, 0, 0.6);
+            background: linear-gradient(
+                135deg,
+                rgba(0, 0, 0, 0.8) 0%,
+                rgba(0, 0, 0, 0.6) 50%,
+                rgba(0, 0, 0, 0.8) 100%
+            );
             z-index: -1;
         }
         #start-buttons-container {
@@ -183,10 +199,10 @@
             flex-direction: row; /* Changed from column to row */
             justify-content: center; /* Center the buttons horizontally */
             align-items: center;
-            background-color: rgba(255, 255, 255, 0.9);
+            background-color: rgba(255, 255, 255, 0.95);
             padding: 40px;
             border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
             margin-top: 20px;
         }
         .start-button {
@@ -291,21 +307,22 @@
         }
         #start-title {
             font-family: 'Indie Flower', cursive;
-            font-size: 28px; /* Reduced from 32px */
-            color: #A0E4CB;
+            font-size: 28px;
+            color: #E0E0E0;
             text-align: left;
-            margin-bottom: 50px; /* Increased from 30px to create more space */
-            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
-            line-height: 1.6; /* Increased for better readability */
+            margin-bottom: 50px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+            line-height: 1.6;
             max-width: 80%;
             padding-left: 40px;
         }
 
         #start-title span {
             display: block;
-            font-size: 36px; /* Reduced from 40px */
-            color: #F9F3CC;
+            font-size: 36px;
+            color: #FFFFFF;
             margin-bottom: 10px;
+            text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.9);
         }
 
         #start-buttons-container {
@@ -540,6 +557,7 @@
             margin: 20px auto 0;
         }
     </style>
+    <meta http-equiv="origin-trial" content="*">
 </head>
 <body>
     <div id="app">
@@ -567,6 +585,20 @@
                 </a>
             </section>
             <section id="start-container" aria-label="Focus Companion Start Screen">
+                <!-- Update video paths and add error handling -->
+                <video 
+                    id="rain-background" 
+                    muted 
+                    loop 
+                    playsinline
+                    preload="auto"
+                    style="opacity: 0.8"
+                >
+                    <source src="./assets/rain-background.mp4" type="video/mp4">
+                    <source src="./assets/rain-background-fallback.mp4" type="video/mp4">
+                </video>
+                
+                <!-- Rest of your existing content -->
                 <h1 id="start-title">
                     <span>Discover Your Ideal Focus Ambiance</span>
                     In a world full of distractions,<br>
@@ -613,24 +645,8 @@
         </main>
     </div>
 
-    <script src="https://www.youtube.com/iframe_api"></script>
     <script>
-        // This function will be called once the API is ready
-        function onYouTubeIframeAPIReady() {
-            // Your existing code to create the player goes here
-            loadVideo();
-        }
-
-        const preSelectedMusicVideos = [
-            'Chs2mKwsha4', 'c18WZZa4KIA', '9HOJ0f5vMEY', 'fIcguYb58CU', '9LH_srczd3k', 'fBvMQ6f-F5Y', 'JJH8E3GKdOs', '4wZmRQcIDME', 'pBIfq9EdK9A', 't8C_sEWYKyg', 'Wwk7oJRUhqQ', 'ner_DA0HZts', 'smeH-CPUa0E', 'SXUAudmzemo', 'K1881OmmQCE', 'bTnFW5QDTkE', 'ATkI9r6DEeE', 'BHrQNVTcdPg', 'Dy7xOJAyFis', '8J7-oanANhE', 'ksoP0Xjljgk', 'm6SOJlkN1zU', 'bXT96SVp0jg', 'HrNNk-zUR3Q', 'DRFHklnN-SM', 'pFQAyE0uFZ8', 'tedLJsVon1o', 'OViU_giSNl4', 'NQVPjn8wNAw', 'ykTLM_3TsPo', '5lOEWQJyI9s', 'u0UsgECaeuY', 'OvoAsrR7fXs', 'avxzq5wKt_4', '4zbGpTybGnA', 'Kn3jZO6Rock', 'UcBEvaZ8aaw', 'yflQzrfdtXw', '6tKTjqB-f_w', '02Kmu4CY0G4', 'pKbGGt-iL1Q', 'tHPGFsu1fHo', 'OO2kPK5-qno', '_Kha7TOXSgk', 'mA3O_x_ypJM', 'IxmDx256CzM', 'rKImvyg0thI', 'IC2U4WmGFyQ', 'xOQyovt-Jio', 'W4BqvpsyC3Y', 'pCRAnf1UCLA', 'qAthzzdO-kY', 'JWeE_u88W-M', '0L38Z9hIi5s', 'u9vK5utTcxE', 'igJxX3NEEHM'
-        ];
-
-        const preSelectedNoMusicVideos = [
-            'q8kxKvSQ7MI', 'eI9WoDh-2b4', 'HchoJW80jiQ', 'BHACKCNDMW8',
-            'efhzNvN4mrQ', 'zfvYhU0J8xc', 'iHzB1TOskEA', 'WJi3q2hlxvY', 'reFJTK645O4', 'lRB6EUgdYvA', 'awIaXbV0sNs', 'RD929GWcPxo', '4NnNv9pWhqc', 'LRmNqKw6Ly0', 'MOoJN_J0GdQ', 'nrF2HflT8Tk', 'pRG0cDAU70o', '7b8Pcma3EwY', 's3VnmAIeetA', 'g2Ytq8atf70', 'N9TefB0gh_k', 'VLfPUJCPDqY', 'eJhhfr7sxk8', 'U_KrN18SOYk', 'wmsanwB-z-0', 'pyAGgC2-45g', 'Y7mkQ6R4ABg', 'H-wk-58QnYM', 'jU8w2-EcMIc', 'V_MRfN9ABTQ', 'qe3l1rvJMlA', 'hXAxxXVPm-M', 'UgHKb_7884o', 'zJW0NG6BYkY', '5UuvHzy3nvg', 'NeBlDtBSbI8', 'bhWJF9FlBqM', 'Wr4v0NO2PRo', 'VGlYxtkZUXI', '0vU22YUocHs', 'DaWb3XxMUS8', 'LhTxrJaoCKY', 'u3TnmAB693M', 'aXMVb5pZ_iM', 'DZkAzEmLoOQ', '_P2O9ZXpKD8', 'SMnyaKqp-h4', 'HRSKWtsr_Ss', 'WlMgvxy6Wr8', '0KMjwgcg2vs', '1UlSfJj6yac', 'p1yDbck93sE', '3qyl9H_BW5o', '4vIQON2fDWM', 'L_sGOlCaH8U', '4LrNgoGlQm4', 'dd4D8tZPfKE', 'n1R486h9T4Q', 'SVrCG11zSPw', 'akpLkQd8WnE'
-        ];
-
-        let videoIds = [];
+        // Define global variables
         let player;
         let timer;
         let timerInterval;
@@ -642,12 +658,38 @@
         let retryCount = 0;
         const maxRetries = 3;
 
-        function initializeVideoIds(withMusic) {
-            videoIds = withMusic ? preSelectedMusicVideos : preSelectedNoMusicVideos;
-            shuffledVideoIds = shuffleArray(videoIds.filter(id => !recentlyPlayedVideos.includes(id)));
-            console.log("Initialized video IDs:", shuffledVideoIds);
-        }
+        // Add back your pre-selected video arrays
+        const preSelectedMusicVideos = [
+            'Chs2mKwsha4', 'c18WZZa4KIA', '9HOJ0f5vMEY', 'fIcguYb58CU', '9LH_srczd3k', 
+            'fBvMQ6f-F5Y', 'JJH8E3GKdOs', '4wZmRQcIDME', 'pBIfq9EdK9A', 't8C_sEWYKyg', 
+            'Wwk7oJRUhqQ', 'ner_DA0HZts', 'smeH-CPUa0E', 'SXUAudmzemo', 'K1881OmmQCE', 
+            'bTnFW5QDTkE', 'ATkI9r6DEeE', 'BHrQNVTcdPg', 'Dy7xOJAyFis', '8J7-oanANhE', 
+            'ksoP0Xjljgk', 'm6SOJlkN1zU', 'bXT96SVp0jg', 'HrNNk-zUR3Q', 'DRFHklnN-SM', 
+            'pFQAyE0uFZ8', 'tedLJsVon1o', 'OViU_giSNl4', 'NQVPjn8wNAw', 'ykTLM_3TsPo', 
+            '5lOEWQJyI9s', 'u0UsgECaeuY', 'OvoAsrR7fXs', 'avxzq5wKt_4', '4zbGpTybGnA', 
+            'Kn3jZO6Rock', 'UcBEvaZ8aaw', 'yflQzrfdtXw', '6tKTjqB-f_w', '02Kmu4CY0G4', 
+            'pKbGGt-iL1Q', 'tHPGFsu1fHo', 'OO2kPK5-qno', '_Kha7TOXSgk', 'mA3O_x_ypJM', 
+            'IxmDx256CzM', 'rKImvyg0thI', 'IC2U4WmGFyQ', 'xOQyovt-Jio', 'W4BqvpsyC3Y', 
+            'pCRAnf1UCLA', 'qAthzzdO-kY', 'JWeE_u88W-M', '0L38Z9hIi5s', 'u9vK5utTcxE', 
+            'igJxX3NEEHM'
+        ];
 
+        const preSelectedNoMusicVideos = [
+            'q8kxKvSQ7MI', 'eI9WoDh-2b4', 'HchoJW80jiQ', 'BHACKCNDMW8', 'efhzNvN4mrQ', 
+            'zfvYhU0J8xc', 'iHzB1TOskEA', 'WJi3q2hlxvY', 'reFJTK645O4', 'lRB6EUgdYvA', 
+            'awIaXbV0sNs', 'RD929GWcPxo', '4NnNv9pWhqc', 'LRmNqKw6Ly0', 'MOoJN_J0GdQ', 
+            'nrF2HflT8Tk', 'pRG0cDAU70o', '7b8Pcma3EwY', 's3VnmAIeetA', 'g2Ytq8atf70', 
+            'N9TefB0gh_k', 'VLfPUJCPDqY', 'eJhhfr7sxk8', 'U_KrN18SOYk', 'wmsanwB-z-0', 
+            'pyAGgC2-45g', 'Y7mkQ6R4ABg', 'H-wk-58QnYM', 'jU8w2-EcMIc', 'V_MRfN9ABTQ', 
+            'qe3l1rvJMlA', 'hXAxxXVPm-M', 'UgHKb_7884o', 'zJW0NG6BYkY', '5UuvHzy3nvg', 
+            'NeBlDtBSbI8', 'bhWJF9FlBqM', 'Wr4v0NO2PRo', 'VGlYxtkZUXI', '0vU22YUocHs', 
+            'DaWb3XxMUS8', 'LhTxrJaoCKY', 'u3TnmAB693M', 'aXMVb5pZ_iM', 'DZkAzEmLoOQ', 
+            '_P2O9ZXpKD8', 'SMnyaKqp-h4', 'HRSKWtsr_Ss', 'WlMgvxy6Wr8', '0KMjwgcg2vs', 
+            '1UlSfJj6yac', 'p1yDbck93sE', '3qyl9H_BW5o', '4vIQON2fDWM', 'L_sGOlCaH8U', 
+            '4LrNgoGlQm4', 'dd4D8tZPfKE', 'n1R486h9T4Q', 'SVrCG11zSPw', 'akpLkQd8WnE'
+        ];
+
+        // Add the shuffle array function
         function shuffleArray(array) {
             const shuffled = [...array];
             for (let i = shuffled.length - 1; i > 0; i--) {
@@ -657,26 +699,280 @@
             return shuffled;
         }
 
-        function loadVideo() {
-            retryCount = 0;
-            if (typeof YT === 'undefined' || !YT.loaded) {
-                setTimeout(loadVideo, 100);
-                return;
+        // Fix the initializeVideoIds function
+        function initializeVideoIds(withMusic) {
+            // Clear shuffledVideoIds first
+            shuffledVideoIds = [];
+            
+            // Select the correct video array based on preference
+            const sourceVideos = withMusic ? preSelectedMusicVideos : preSelectedNoMusicVideos;
+            console.log('Selected video type:', withMusic ? 'Music' : 'No Music');
+            console.log('Number of available videos:', sourceVideos.length);
+            
+            // Filter out recently played videos
+            const availableVideos = sourceVideos.filter(id => !recentlyPlayedVideos.includes(id));
+            console.log('Videos after filtering recent plays:', availableVideos.length);
+            
+            // Shuffle the filtered videos
+            shuffledVideoIds = shuffleArray(availableVideos);
+        }
+
+        // Move these timer functions outside of DOMContentLoaded and before onYouTubeIframeAPIReady
+        function startTimer() {
+            let time = 25 * 60;
+            const totalTime = time;
+            const timer = document.getElementById('timer');
+            const timerProgress = document.getElementById('timer-progress');
+            
+            timerInterval = setInterval(() => {
+                const minutes = Math.floor(time / 60);
+                const seconds = time % 60;
+                timer.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                
+                const progress = (totalTime - time) / totalTime * 360;
+                timerProgress.style.transform = `rotate(${progress}deg)`;
+                
+                if (time === 0) {
+                    clearInterval(timerInterval);
+                } else {
+                    time--;
+                }
+            }, 1000);
+        }
+
+        function resetTimer() {
+            clearInterval(timerInterval);
+            let time = 25 * 60;
+            const timer = document.getElementById('timer');
+            const timerProgress = document.getElementById('timer-progress');
+            timer.textContent = '25:00';
+            timerProgress.style.transform = 'rotate(0deg)';
+            startTimer();
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const rainBackground = document.getElementById('rain-background');
+            
+            // Background video handling
+            async function initBackgroundVideo() {
+                try {
+                    await rainBackground.load();
+                    // Try to play immediately without waiting for click
+                    rainBackground.play()
+                        .then(() => console.log('Background video playing'))
+                        .catch((error) => {
+                            console.log('Auto-play failed, falling back to click handler:', error);
+                            // If autoplay fails, fall back to click handler
+                            document.addEventListener('click', function playVideo() {
+                                rainBackground.play()
+                                    .then(() => console.log('Background video playing after click'))
+                                    .catch(() => handleBackgroundVideoError());
+                                document.removeEventListener('click', playVideo);
+                            }, { once: true });
+                        });
+                } catch (error) {
+                    handleBackgroundVideoError();
+                }
             }
 
-            if (shuffledVideoIds.length === 0) {
+            function handleBackgroundVideoError() {
+                console.log('Falling back to static background');
+                if (rainBackground && rainBackground.parentNode) {
+                    rainBackground.parentNode.removeChild(rainBackground);
+                }
+                const startContainer = document.getElementById('start-container');
+                startContainer.style.background = 
+                    'linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.8)), url("https://images.unsplash.com/photo-1515694346937-94d85e41e6f0?auto=format&fit=crop&w=1920&q=80")';
+                startContainer.style.backgroundSize = 'cover';
+                startContainer.style.backgroundPosition = 'center';
+            }
+
+            // Clock reminder functions
+            function showClockReminder() {
+                if (clockReminderShown) return;
+                
+                const clockAnimation = document.getElementById('clock-animation');
+                const clockEmoji = document.getElementById('clock-emoji');
+                const clockReminder = document.getElementById('clock-reminder');
+                
+                clockAnimation.style.display = 'flex';
+                clockEmoji.style.animation = 'zoomIn 1s ease-out forwards';
+                clockReminder.style.animation = 'fadeInScale 1s ease-out 0.3s forwards';
+                
+                clockReminderShown = true;
+                
+                setTimeout(() => {
+                    hideClockReminder();
+                }, 4000);
+            }
+
+            function hideClockReminder() {
+                const clockAnimation = document.getElementById('clock-animation');
+                const clockEmoji = document.getElementById('clock-emoji');
+                const clockReminder = document.getElementById('clock-reminder');
+                
+                clockEmoji.style.animation = 'fadeOut 1s forwards';
+                clockReminder.style.animation = 'fadeOut 1s forwards';
+                
+                setTimeout(() => {
+                    clockAnimation.style.display = 'none';
+                    clockEmoji.style.animation = '';
+                    clockReminder.style.animation = '';
+                }, 1000);
+            }
+
+            // Session handling
+            function startSession(withMusic) {
+                // First, ensure we have a clean state
+                if (player) {
+                    player.destroy();
+                    player = null;
+                }
+                
+                // Set the preference before loading YouTube API
+                currentMusicPreference = withMusic;
+                console.log('Starting session with music:', withMusic);
+                
+                // Initialize video IDs immediately
+                initializeVideoIds(withMusic);
+                console.log('Initialized videos:', shuffledVideoIds.length);
+
+                // Load YouTube API script if not already loaded
+                if (!window.YT) {
+                    const tag = document.createElement('script');
+                    tag.src = "https://www.youtube.com/iframe_api";
+                    const firstScriptTag = document.getElementsByTagName('script')[0];
+                    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+                } else {
+                    // If YT is already loaded, call loadVideo directly
+                    loadVideo();
+                }
+
+                const startContainer = document.getElementById('start-container');
+                const timerContainer = document.getElementById('timer-container');
+                const videoContainer = document.getElementById('video-container');
+                
+                showClockReminder();
+                
+                setTimeout(() => {
+                    startContainer.style.opacity = '0';
+                    startContainer.style.transition = 'opacity 0.5s ease-out';
+                    
+                    setTimeout(() => {
+                        startContainer.style.display = 'none';
+                        videoContainer.style.display = 'block';
+                        videoContainer.innerHTML = ''; // Clear any existing content
+                        timerContainer.style.display = 'block';
+                        
+                        requestFullscreen();
+                    }, 500);
+                }, 2000);
+            }
+
+            function exitSession() {
+                if (player) {
+                    player.destroy(); // Properly destroy the player
+                    player = null;    // Reset player variable
+                }
+                clearInterval(timerInterval);
+                exitFullscreen();
+                
+                document.getElementById('timer-container').style.display = 'none';
+                document.getElementById('video-container').style.display = 'none';
+                
+                // Reset video container
+                const videoContainer = document.getElementById('video-container');
+                videoContainer.innerHTML = ''; // Clear any existing iframe
+                
+                const startContainer = document.getElementById('start-container');
+                startContainer.style.display = 'flex';
+                startContainer.style.opacity = '1';
+                
+                clockReminderShown = false;
+                
+                // Reset focus input
+                const focusInput = document.getElementById('focus-input');
+                const focusDisplay = document.getElementById('focus-display');
+                focusInput.value = '';
+                focusInput.style.display = 'block';
+                focusDisplay.style.display = 'none';
+                
+                // Reset video arrays
+                shuffledVideoIds = [];
                 recentlyPlayedVideos = [];
-                shuffledVideoIds = shuffleArray(videoIds);
+                currentMusicPreference = null;
+            }
+
+            // Fullscreen handling
+            function requestFullscreen() {
+                const elem = document.documentElement;
+                if (elem.requestFullscreen) {
+                    elem.requestFullscreen();
+                } else if (elem.mozRequestFullScreen) {
+                    elem.mozRequestFullScreen();
+                } else if (elem.webkitRequestFullscreen) {
+                    elem.webkitRequestFullscreen();
+                } else if (elem.msRequestFullscreen) {
+                    elem.msRequestFullscreen();
+                }
+            }
+
+            function exitFullscreen() {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                } else if (document.mozCancelFullScreen) {
+                    document.mozCancelFullScreen();
+                } else if (document.webkitExitFullscreen) {
+                    document.webkitExitFullscreen();
+                } else if (document.msExitFullscreen) {
+                    document.msExitFullscreen();
+                }
+            }
+
+            // Volume control
+            function setVolume() {
+                const volumeControl = document.getElementById('volume-control');
+                if (player) {
+                    player.setVolume(volumeControl.value);
+                }
+            }
+
+            // Initialize background video
+            initBackgroundVideo();
+
+            // Event listeners
+            document.getElementById('start-with-music').addEventListener('click', () => startSession(true));
+            document.getElementById('start-no-music').addEventListener('click', () => startSession(false));
+            document.getElementById('reset-timer').addEventListener('click', resetTimer);
+            document.getElementById('change-video').addEventListener('click', changeVideo);
+            document.getElementById('exit-session').addEventListener('click', exitSession);
+            document.getElementById('volume-control').addEventListener('input', setVolume);
+            document.getElementById('video-container').addEventListener('click', hideClockReminder);
+        });
+
+        // YouTube related functions (outside DOMContentLoaded)
+        function onYouTubeIframeAPIReady() {
+            console.log('YouTube API Ready');
+            if (currentMusicPreference !== null) {
+                loadVideo();
+            }
+        }
+
+        // Fix the loadVideo function
+        function loadVideo() {
+            if (shuffledVideoIds.length === 0) {
+                console.log('Reshuffling videos for preference:', currentMusicPreference ? 'Music' : 'No Music');
+                recentlyPlayedVideos = [];
+                initializeVideoIds(currentMusicPreference);
             }
 
             const videoId = shuffledVideoIds.pop();
-            console.log("Loading video:", videoId);
-
+            console.log('Loading video:', videoId);
             recentlyPlayedVideos.push(videoId);
             if (recentlyPlayedVideos.length > maxRecentVideos) {
                 recentlyPlayedVideos.shift();
             }
-
+            
             if (player) {
                 player.loadVideoById({
                     videoId: videoId,
@@ -686,6 +982,10 @@
                     }
                 });
             } else {
+                // Make sure video container is empty
+                const videoContainer = document.getElementById('video-container');
+                videoContainer.innerHTML = '';
+                
                 player = new YT.Player('video-container', {
                     height: '100%',
                     width: '100%',
@@ -705,279 +1005,22 @@
             }
         }
 
+        function changeVideo() {
+            loadVideo();
+        }
+
         function onPlayerReady(event) {
             event.target.playVideo();
             event.target.unMute();
             event.target.setVolume(50);
             startTimer();
-            requestFullscreen();
-            // Remove the showClockReminder() call from here
         }
 
         function onPlayerError(event) {
             console.log("Video failed to load. Error code:", event.data);
-            // Remove the failed video from the recently played list
             recentlyPlayedVideos = recentlyPlayedVideos.filter(id => id !== player.getVideoData().video_id);
-            
-            retryLoadVideo();
+            loadVideo(); // Try loading another video
         }
-
-        function retryLoadVideo() {
-            if (retryCount < maxRetries) {
-                retryCount++;
-                console.log(`Retry attempt ${retryCount}...`);
-                loadVideo();
-            } else {
-                retryCount = 0;
-                console.log("Max retries reached. Showing error message to user.");
-                showErrorMessage("We're having trouble loading a video. Please try again later.");
-            }
-        }
-
-        function showErrorMessage(message) {
-            const errorDiv = document.createElement('div');
-            errorDiv.id = 'error-message';
-            errorDiv.textContent = message;
-            errorDiv.style.position = 'fixed';
-            errorDiv.style.top = '50%';
-            errorDiv.style.left = '50%';
-            errorDiv.style.transform = 'translate(-50%, -50%)';
-            errorDiv.style.backgroundColor = 'rgba(255, 0, 0, 0.8)';
-            errorDiv.style.color = 'white';
-            errorDiv.style.padding = '20px';
-            errorDiv.style.borderRadius = '10px';
-            errorDiv.style.zIndex = '9999';
-            document.body.appendChild(errorDiv);
-
-            setTimeout(() => {
-                document.body.removeChild(errorDiv);
-                exitSession();
-            }, 5000);
-        }
-
-        function startTimer() {
-            let time = 25 * 60; // 25 minutes in seconds
-            const totalTime = time;
-            timer = document.getElementById('timer');
-            const timerProgress = document.getElementById('timer-progress');
-            
-            timerInterval = setInterval(() => {
-                const minutes = Math.floor(time / 60);
-                const seconds = time % 60;
-                timer.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-                
-                // Update progress circle
-                const progress = (totalTime - time) / totalTime * 360;
-                timerProgress.style.transform = `rotate(${progress}deg)`;
-                
-                if (time === 0) {
-                    resetTimer();
-                } else {
-                    time--;
-                }
-            }, 1000);
-        }
-
-        function resetTimer() {
-            clearInterval(timerInterval);
-            let time = 25 * 60; // Reset to 25 minutes
-            const totalTime = time;
-            timer.textContent = '25:00';
-            const timerProgress = document.getElementById('timer-progress');
-            timerProgress.style.transform = 'rotate(0deg)'; // Reset progress circle
-
-            timerInterval = setInterval(() => {
-                const minutes = Math.floor(time / 60);
-                const seconds = time % 60;
-                timer.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-                
-                // Update progress circle
-                const progress = (totalTime - time) / totalTime * 360;
-                timerProgress.style.transform = `rotate(${progress}deg)`;
-                
-                if (time === 0) {
-                    clearInterval(timerInterval);
-                } else {
-                    time--;
-                }
-            }, 1000);
-        }
-
-        function exitSession() {
-            if (player) {
-                player.stopVideo();
-            }
-            clearInterval(timerInterval);
-            exitFullscreen();
-            
-            // Hide the timer container and video container
-            document.getElementById('timer-container').style.display = 'none';
-            document.getElementById('video-container').style.display = 'none';
-            
-            // Show the start container
-            const startContainer = document.getElementById('start-container');
-            startContainer.style.display = 'flex';
-            startContainer.style.opacity = '1';
-            
-            // Reset the clock reminder flag
-            clockReminderShown = false;
-            
-            // Reset the focus input
-            const focusInput = document.getElementById('focus-input');
-            const focusDisplay = document.getElementById('focus-display');
-            focusInput.value = '';
-            focusInput.style.display = 'block';
-            focusDisplay.style.display = 'none';
-        }
-
-        function requestFullscreen() {
-            const elem = document.documentElement;
-            if (elem.requestFullscreen) {
-                elem.requestFullscreen();
-            } else if (elem.mozRequestFullScreen) {
-                elem.mozRequestFullScreen();
-            } else if (elem.webkitRequestFullscreen) {
-                elem.webkitRequestFullscreen();
-            } else if (elem.msRequestFullscreen) {
-                elem.msRequestFullscreen();
-            }
-        }
-
-        function exitFullscreen() {
-            if (document.exitFullscreen) {
-                document.exitFullscreen();
-            } else if (document.mozCancelFullScreen) {
-                document.mozCancelFullScreen();
-            } else if (document.webkitExitFullscreen) {
-                document.webkitExitFullscreen();
-            } else if (document.msExitFullscreen) {
-                document.msExitFullscreen();
-            }
-        }
-
-        function setVolume() {
-            const volumeControl = document.getElementById('volume-control');
-            player.setVolume(volumeControl.value);
-        }
-
-        function showClockReminder() {
-            if (clockReminderShown) return;
-            
-            const clockAnimation = document.getElementById('clock-animation');
-            const clockEmoji = document.getElementById('clock-emoji');
-            const clockReminder = document.getElementById('clock-reminder');
-            
-            clockAnimation.style.display = 'flex';
-            clockEmoji.style.animation = 'zoomIn 1s ease-out forwards';
-            clockReminder.style.animation = 'fadeInScale 1s ease-out 0.3s forwards';
-            
-            clockReminderShown = true;
-            
-            setTimeout(() => {
-                hideClockReminder();
-            }, 4000); // Changed from 15000 to 4000 (4 seconds)
-        }
-
-        function hideClockReminder() {
-            const clockAnimation = document.getElementById('clock-animation');
-            const clockEmoji = document.getElementById('clock-emoji');
-            const clockReminder = document.getElementById('clock-reminder');
-            
-            clockEmoji.style.animation = 'fadeOut 1s forwards';
-            clockReminder.style.animation = 'fadeOut 1s forwards';
-            
-            setTimeout(() => {
-                clockAnimation.style.display = 'none';
-                // Reset animations for next use
-                clockEmoji.style.animation = '';
-                clockReminder.style.animation = '';
-            }, 1000);
-        }
-
-        function startSession(withMusic) {
-            currentMusicPreference = withMusic;
-            const startContainer = document.getElementById('start-container');
-            const timerContainer = document.getElementById('timer-container');
-            const videoContainer = document.getElementById('video-container');
-            
-            // Show clock reminder immediately
-            showClockReminder();
-            
-            // Delay the fade-out of the start container
-            setTimeout(() => {
-                startContainer.style.opacity = '0';
-                startContainer.style.transition = 'opacity 0.5s ease-out';
-                
-                setTimeout(() => {
-                    startContainer.style.display = 'none';
-                    videoContainer.style.display = 'block';
-                    timerContainer.style.display = 'block';
-                    
-                    initializeVideoIds(withMusic);
-                    loadVideo();
-                    
-                    // Enter fullscreen mode
-                    requestFullscreen();
-                    
-                    // Wait for the player to be ready
-                    const checkPlayerReady = setInterval(() => {
-                        if (player && player.getPlayerState !== undefined) {
-                            clearInterval(checkPlayerReady);
-                        }
-                    }, 100);
-                }, 500); // Wait for the fade-out transition to complete
-            }, 2000); // Delay the start of the fade-out to ensure clock reminder is visible
-        }
-
-        function changeVideo() {
-            loadVideo();
-        }
-
-        function handleFocusInput() {
-            const focusInput = document.getElementById('focus-input');
-            const focusDisplay = document.getElementById('focus-display');
-
-            function updateFocus() {
-                const focusText = focusInput.value.trim();
-                if (focusText) {
-                    focusDisplay.innerHTML = `Focus: ${focusText} <span style="margin-left: 5px;">✏️</span>`;
-                    focusInput.style.display = 'none';
-                    focusDisplay.style.display = 'block';
-                }
-            }
-
-            function enableEditing() {
-                focusInput.value = focusDisplay.textContent.replace('Focus: ', '').replace('✏️', '').trim();
-                focusInput.style.display = 'block';
-                focusDisplay.style.display = 'none';
-                focusInput.focus();
-            }
-
-            focusInput.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') {
-                    updateFocus();
-                }
-            });
-
-            focusDisplay.addEventListener('click', enableEditing);
-
-            focusInput.addEventListener('blur', () => {
-                if (focusInput.value.trim()) {
-                    updateFocus();
-                }
-            });
-        }
-
-        // Call this function to initialize the focus input functionality
-        handleFocusInput();
-
-        document.getElementById('start-with-music').addEventListener('click', () => startSession(true));
-        document.getElementById('start-no-music').addEventListener('click', () => startSession(false));
-        document.getElementById('reset-timer').addEventListener('click', resetTimer);
-        document.getElementById('change-video').addEventListener('click', changeVideo);
-        document.getElementById('exit-session').addEventListener('click', exitSession);
-        document.getElementById('volume-control').addEventListener('input', setVolume);
-        document.getElementById('video-container').addEventListener('click', hideClockReminder);
     </script>
 </body>
 </html>
