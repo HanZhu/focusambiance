@@ -948,6 +948,28 @@
             document.getElementById('exit-session').addEventListener('click', exitSession);
             document.getElementById('volume-control').addEventListener('input', setVolume);
             document.getElementById('video-container').addEventListener('click', hideClockReminder);
+
+            // Add this inside your DOMContentLoaded event listener, with the other event listeners
+            const focusInput = document.getElementById('focus-input');
+            const focusDisplay = document.getElementById('focus-display');
+
+            focusInput.addEventListener('keypress', function(event) {
+                if (event.key === 'Enter') {
+                    const focusText = this.value.trim();
+                    if (focusText) {
+                        this.style.display = 'none';
+                        focusDisplay.textContent = focusText;
+                        focusDisplay.style.display = 'block';
+                    }
+                }
+            });
+
+            focusDisplay.addEventListener('click', function() {
+                this.style.display = 'none';
+                focusInput.style.display = 'block';
+                focusInput.value = this.textContent;
+                focusInput.focus();
+            });
         });
 
         // YouTube related functions (outside DOMContentLoaded)
